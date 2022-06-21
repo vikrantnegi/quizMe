@@ -6,6 +6,7 @@ import data from "../assets/data.json";
 import layout from "../constants/Layout";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
+import { GlobalStyles } from "../utils/GlobalStyles";
 
 export default function HomeScreen({
   navigation,
@@ -23,13 +24,13 @@ export default function HomeScreen({
         >
           <View style={styles.countWrapper}>
             <Text>
-              {index + 1} /{data.length}
+              {index + 1}/{data.length}
             </Text>
           </View>
           <Text style={styles.text}>{item.question}</Text>
         </View>
 
-        <View style={{ marginLeft: 10 }}>
+        <View>
           {item.options.map((option, index) => {
             return (
               <TouchableOpacity key={index} style={styles.option}>
@@ -70,11 +71,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -25,
     left: layout.window.width / 2 - 45,
+    backgroundColor: "#f4c144",
+    ...GlobalStyles.shadow,
   },
   questionContainer: {
     padding: 10,
     paddingBottom: 100,
     paddingTop: 50,
+    marginBottom: 20,
+    borderRadius: 2,
   },
   item: {
     width: layout.window.width,
@@ -86,9 +91,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   textSmall: {
-    fontSize: 14,
+    fontSize: 16,
   },
   option: {
-    paddingVertical: 5,
+    paddingVertical: 10,
+    borderWidth: 2,
+    borderColor: "#444",
+    marginBottom: 15,
+    paddingHorizontal: 10,
+    borderRadius: 3,
   },
 });
