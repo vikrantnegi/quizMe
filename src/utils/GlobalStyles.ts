@@ -11,4 +11,12 @@ export const GlobalStyles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,
   },
+  rowCenter: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  rowSpaceBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
 });
