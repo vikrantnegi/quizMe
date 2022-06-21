@@ -8,18 +8,14 @@ import {
   ViewStyle,
 } from "react-native";
 import Colors from "../constants/Colors";
-import { counterCircleSize, height, width } from "../constants/Layout";
-import useColorScheme from "../hooks/useColorScheme";
-import { GlobalStyles } from "../utils/GlobalStyles";
-import { Text, View } from "./Themed";
-import data from "../assets/data.json";
-import { Option, QuizItem } from "../types";
+import { Text } from "./Themed";
 
 type Props = {
   title: string;
   viewStyle?: ViewStyle;
   textStyle?: TextStyle;
   onButtonPress: () => void;
+  disabled?: boolean;
 };
 
 const Button = (props: Props) => {
@@ -28,16 +24,20 @@ const Button = (props: Props) => {
     viewStyle = {},
     textStyle = {},
     onButtonPress = () => {},
+    disabled = false,
   } = props;
 
   return (
     <TouchableOpacity
       {...props}
       activeOpacity={0.8}
-      style={[styles.container, viewStyle]}
+      style={[styles.container, viewStyle, disabled && styles.disabled]}
       onPress={onButtonPress}
+      disabled={disabled}
     >
-      <Text style={[styles.text, textStyle]}>{title}</Text>
+      <Text style={[styles.text, textStyle, disabled && styles.textDisabled]}>
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -53,6 +53,13 @@ const styles = StyleSheet.create({
     color: Colors.tintColorLight,
     textAlign: "center",
     fontSize: 16,
+  },
+  disabled: {
+    backgroundColor: Colors.disabledStyle,
+    opacity: 0.4,
+  },
+  textDisabled: {
+    color: "#fff",
   },
 });
 
