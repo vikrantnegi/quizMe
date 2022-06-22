@@ -14,3 +14,9 @@ export interface Answer {
   id: string;
   value: string;
 }
+
+export interface SubmittedItem {
+  selectedOptionId: string;
+  isQuestionAnswered: boolean;
+  question: QuizItem;
+}

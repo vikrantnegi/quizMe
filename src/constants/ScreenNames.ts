@@ -1,8 +1,8 @@
 export const screenNames = {
-  Home: "Home",
+  Home: 'Home',
 };
 
 export const tabNames = {
-  TabOne: "Tab One",
-  TabTwo: "Tab Two",
+  TabOne: 'Tab One',
+  TabTwo: 'Tab Two',
 };

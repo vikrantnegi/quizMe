@@ -1,13 +1,16 @@
-import * as React from "react";
-import { Pressable, StyleSheet } from "react-native";
-import Colors from "../constants/Colors";
-import { counterCircleSize, height, width } from "../constants/Layout";
-import useColorScheme from "../hooks/useColorScheme";
-import { GlobalStyles } from "../utils/GlobalStyles";
-import { Text, View } from "./Themed";
-import data from "../assets/data.json";
-import { Option, QuizItem } from "../types";
-import Button from "./Button";
+import React, { useState } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
+
+import data from '../assets/data.json';
+import Colors from '../constants/Colors';
+import { counterCircleSize, height, width } from '../constants/Layout';
+import { submitAnswer } from '../features/quizSlice';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import useColorScheme from '../hooks/useColorScheme';
+import { Option, QuizItem } from '../types';
+import { GlobalStyles } from '../utils/GlobalStyles';
+import OptionCell from './OptionCell';
+import { Text, View } from './Themed';
 
 type Props = {
   item: QuizItem;
@@ -17,37 +20,25 @@ type Props = {
 const QuizCard = (props: Props) => {
   const { item, index } = props;
   const colorScheme = useColorScheme();
+  const dispatch = useAppDispatch();
+  const answers = useAppSelector((state) => state.questions);
 
-  const renderQuizOption = (option: Option) => {
-    return (
-      <Pressable
-        key={option.id}
-        style={({ pressed }) => [
-          styles.option,
-          {
-            backgroundColor: pressed ? Colors.selectedColor : "white",
-            borderColor: pressed ? Colors.selectedColor : "#444",
-          },
-        ]}
-        onPress={() => {}}
-      >
-        {({ pressed }) => (
-          <Text style={[styles.textSmall, pressed && { color: "#fff" }]}>
-            {option.value}
-          </Text>
-        )}
-      </Pressable>
-    );
+  const isQuestionAnswered = answers.some(
+    (answer) => answer.question.id === item.id && answer.isQuestionAnswered
+  );
+
+  const handleSubmitAnswer = (option: Option) => {
+    const answeredQuestion = {
+      selectedOptionId: option.id,
+      isQuestionAnswered: true,
+      question: item,
+    };
+    !isQuestionAnswered && dispatch(submitAnswer(answeredQuestion));
   };
 
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.questionContainer,
-          { backgroundColor: Colors[colorScheme].tint },
-        ]}
-      >
+      <View style={[styles.questionContainer, { backgroundColor: Colors[colorScheme].tint }]}>
         <View style={styles.countWrapper}>
           <Text>
             {index + 1}/{data.length}
@@ -56,7 +47,14 @@ const QuizCard = (props: Props) => {
         <Text style={styles.text}>{item.question}</Text>
       </View>
       {item.options.map((option: Option) => {
-        return renderQuizOption(option);
+        return (
+          <OptionCell
+            key={option.id}
+            option={option}
+            item={item}
+            handleSubmitAnswer={handleSubmitAnswer}
+          />
+        );
       })}
     </View>
   );
@@ -64,7 +62,7 @@ const QuizCard = (props: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: width,
+    width,
     height: height / 2,
     padding: 15,
     marginTop: 50,
@@ -80,29 +78,17 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     width: counterCircleSize,
     borderRadius: 99999,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 5,
-    position: "absolute",
+    position: 'absolute',
     top: -counterCircleSize / 2,
     left: width / 2 - counterCircleSize / 2 - 20,
-    backgroundColor: "#f4c144",
+    backgroundColor: '#f4c144',
     ...GlobalStyles.shadow,
   },
   text: {
     fontSize: 20,
-  },
-
-  textSmall: {
-    fontSize: 16,
-  },
-  option: {
-    paddingVertical: 10,
-    borderWidth: 2,
-    borderColor: "#444",
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    borderRadius: 3,
   },
 });
 

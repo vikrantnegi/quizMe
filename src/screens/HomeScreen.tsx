@@ -1,21 +1,20 @@
-import { useCallback, useRef, useState } from "react";
-import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
-import { View } from "../components/Themed";
-import { HomeStackScreenProps } from "../navigation/types";
-import data from "../assets/data.json";
-import QuizCard from "../components/QuizCard";
-import Button from "../components/Button";
-import { GlobalStyles } from "../utils/GlobalStyles";
-import { QuizItem } from "../types";
+import { useCallback, useRef, useState } from 'react';
+import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+
+import data from '../assets/data.json';
+import Button from '../components/Button';
+import QuizCard from '../components/QuizCard';
+import { View } from '../components/Themed';
+import { HomeStackScreenProps } from '../navigation/types';
+import { QuizItem } from '../types';
+import { GlobalStyles } from '../utils/GlobalStyles';
 
 type RenderItemProps = {
   item: QuizItem;
   index: number;
 };
 
-export default function HomeScreen({
-  navigation,
-}: HomeStackScreenProps<"Home">) {
+const HomeScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
   const flatListRef = useRef<FlatList>(null);
   const currentIndex = useRef(0);
   const [isPrevDisabled, setPrevDisabled] = useState(false);
@@ -67,13 +66,13 @@ export default function HomeScreen({
       />
       <View style={GlobalStyles.rowSpaceBetween}>
         <Button
-          title={"PREVIOUS"}
+          title="PREVIOUS"
           onButtonPress={handlePreviousPress}
           viewStyle={styles.btnStyle}
           disabled={isPrevDisabled}
         />
         <Button
-          title={"NEXT"}
+          title="NEXT"
           onButtonPress={handleNextPress}
           viewStyle={styles.btnStyle}
           disabled={isNextDisabled}
@@ -81,7 +80,7 @@ export default function HomeScreen({
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -92,3 +91,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+export default HomeScreen;

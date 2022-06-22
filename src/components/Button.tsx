@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -6,9 +6,10 @@ import {
   Touchable,
   TouchableOpacity,
   ViewStyle,
-} from "react-native";
-import Colors from "../constants/Colors";
-import { Text } from "./Themed";
+} from 'react-native';
+
+import Colors from '../constants/Colors';
+import { Text } from './Themed';
 
 type Props = {
   title: string;
@@ -33,11 +34,8 @@ const Button = (props: Props) => {
       activeOpacity={0.8}
       style={[styles.container, viewStyle, disabled && styles.disabled]}
       onPress={onButtonPress}
-      disabled={disabled}
-    >
-      <Text style={[styles.text, textStyle, disabled && styles.textDisabled]}>
-        {title}
-      </Text>
+      disabled={disabled}>
+      <Text style={[styles.text, textStyle, disabled && styles.textDisabled]}>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -51,7 +49,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: Colors.tintColorLight,
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 16,
   },
   disabled: {
@@ -59,7 +57,7 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   },
   textDisabled: {
-    color: "#fff",
+    color: '#fff',
   },
 });
 
