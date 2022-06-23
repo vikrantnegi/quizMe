@@ -38,7 +38,7 @@ const QuizCard = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.questionContainer, { backgroundColor: Colors[colorScheme].tint }]}>
+      <View style={[styles.questionContainer, { backgroundColor: Colors.tintColorLight }]}>
         <View style={styles.countWrapper}>
           <Text>
             {index + 1}/{quizzes.length}

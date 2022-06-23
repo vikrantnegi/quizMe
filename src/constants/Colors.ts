@@ -1,4 +1,4 @@
-const tintColorLight = '#fadb9b';
+const tintColorLight = '#f3aa13';
 const tintColorDark = '#fff';
 const selectedColor = '#5aa96b';
 const secondaryColor = '#0d2744';

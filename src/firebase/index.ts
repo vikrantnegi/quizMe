@@ -1,12 +1,19 @@
-import { getDatabase, ref, onValue, set } from 'firebase/database';
+import { arrayUnion, doc, getFirestore, updateDoc } from 'firebase/firestore';
 
-// type Props={
+import { quizCollectionTypes, quizTypes } from '../constants/Constants';
 
-// }
-// export function storeQuizScore(userId) {
-//   const db = getDatabase();
-//   const reference = ref(db, 'users/' + userId);
-//   set(reference, {
-//     highscore: score,
-//   });
-// }
+const db = getFirestore();
+
+const handleAddDoc = async () => {
+  const docRef = doc(db, quizCollectionTypes.quizzes, quizTypes.basicGk);
+  await updateDoc(docRef, {
+    questions: [],
+  });
+};
+
+const handleAddQuiz = async () => {
+  const docRef = doc(db, quizCollectionTypes.quizzes, quizTypes.basic);
+  await updateDoc(docRef, {
+    questions: arrayUnion({}),
+  });
+};

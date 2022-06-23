@@ -19,4 +19,8 @@ export const GlobalStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  middle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

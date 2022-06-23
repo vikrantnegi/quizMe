@@ -36,6 +36,7 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> = Composit
 
 export type HomeStackParamList = {
   Home: undefined;
+  Quiz: undefined;
 };
 
 export type HomeStackScreenProps<Screen extends keyof HomeStackParamList> = NativeStackScreenProps<

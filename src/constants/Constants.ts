@@ -3,5 +3,9 @@ export const quizCollectionTypes = {
 };
 
 export const quizTypes = {
-  basic: 'basic',
+  sports: 'Sports',
+  technology: 'Technology',
+  indianHistory: 'Indian History',
+  indianPolitics: 'Indian Politics',
+  basicGk: 'Basic General Knowledge',
 };
