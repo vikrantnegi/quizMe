@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 
-import data from '../assets/data.json';
 import Colors from '../constants/Colors';
 import { counterCircleSize, height, width } from '../constants/Layout';
 import { submitAnswer } from '../features/quizSlice';
@@ -15,10 +14,11 @@ import { Text, View } from './Themed';
 type Props = {
   item: QuizItem;
   index: number;
+  quizzes: QuizItem[];
 };
 
 const QuizCard = (props: Props) => {
-  const { item, index } = props;
+  const { item, index, quizzes } = props;
   const colorScheme = useColorScheme();
   const dispatch = useAppDispatch();
   const answers = useAppSelector((state) => state.questions);
@@ -41,7 +41,7 @@ const QuizCard = (props: Props) => {
       <View style={[styles.questionContainer, { backgroundColor: Colors[colorScheme].tint }]}>
         <View style={styles.countWrapper}>
           <Text>
-            {index + 1}/{data.length}
+            {index + 1}/{quizzes.length}
           </Text>
         </View>
         <Text style={styles.text}>{item.question}</Text>
