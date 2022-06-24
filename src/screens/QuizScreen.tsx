@@ -1,11 +1,13 @@
 import { useRoute } from '@react-navigation/native';
+import isEmpty from 'lodash.isempty';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 
 import ActivityIndicatorModal from '../components/ActivityInndicatorModal';
 import Button from '../components/Button';
 import QuizCard from '../components/QuizCard';
-import { View } from '../components/Themed';
+import WrapperComp from '../components/SafeAreaWraper';
+import { Text, View } from '../components/Themed';
 import { quizCollectionTypes } from '../constants/Constants';
 import firebaseManager from '../firebase/index';
 import { HomeStackScreenProps } from '../navigation/types';
@@ -17,12 +19,12 @@ type RenderItemProps = {
   index: number;
 };
 
-const HomeScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
+const QuizScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
   const flatListRef = useRef<FlatList>(null);
   const currentIndex = useRef(0);
   const [isPrevDisabled, setPrevDisabled] = useState(false);
   const [isNextDisabled, setNextDisabled] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [quizzes, setQuizzes] = useState<QuizItem[]>([]);
   const route = useRoute();
 
@@ -31,8 +33,9 @@ const HomeScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
   }, []);
 
   const fetchQuiz = async () => {
+    setLoading(true);
     const data = await firebaseManager.getDoc(quizCollectionTypes.quizzes, route?.params?.category);
-    setQuizzes(data ? data.questions : []);
+    setQuizzes(isEmpty(data) ? [] : data.questions);
     setLoading(false);
   };
 
@@ -69,9 +72,22 @@ const HomeScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
     );
   }, []);
 
+  if (loading) {
+    return <ActivityIndicatorModal isLoading />;
+  }
+
+  if (!quizzes.length) {
+    return (
+      <View style={styles.emptyContainer}>
+        <View>
+          <Text style={styles.text}>No Quiz Available right now</Text>
+          <Button title="Try Again" onButtonPress={fetchQuiz} viewStyle={{ alignSelf: 'center' }} />
+        </View>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
-      <ActivityIndicatorModal isLoading={loading} />
       <FlatList
         ref={flatListRef}
         renderItem={renderItem}
@@ -109,6 +125,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     flex: 1,
   },
+  emptyContainer: {
+    flex: 1,
+    ...GlobalStyles.middle,
+  },
+  text: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
 });
 
-export default HomeScreen;
+export default WrapperComp(QuizScreen);

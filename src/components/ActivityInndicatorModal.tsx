@@ -11,7 +11,7 @@ function ActivityIndicatorModal({ isLoading = false, viewStyle = {} }) {
 
   return (
     <View style={[styles.modalBackground, viewStyle]}>
-      <ActivityIndicator size="small" />
+      <ActivityIndicator size="large" />
     </View>
   );
 }

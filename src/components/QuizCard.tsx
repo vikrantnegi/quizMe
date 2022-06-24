@@ -5,7 +5,6 @@ import Colors from '../constants/Colors';
 import { counterCircleSize, height, width } from '../constants/Layout';
 import { submitAnswer } from '../features/quizSlice';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import useColorScheme from '../hooks/useColorScheme';
 import { Option, QuizItem } from '../types';
 import { GlobalStyles } from '../utils/GlobalStyles';
 import OptionCell from './OptionCell';
@@ -19,7 +18,6 @@ type Props = {
 
 const QuizCard = (props: Props) => {
   const { item, index, quizzes } = props;
-  const colorScheme = useColorScheme();
   const dispatch = useAppDispatch();
   const answers = useAppSelector((state) => state.questions);
 
@@ -65,7 +63,7 @@ const styles = StyleSheet.create({
     width,
     height: height / 2,
     padding: 15,
-    marginTop: 50,
+    marginTop: counterCircleSize / 2,
   },
   questionContainer: {
     paddingHorizontal: 20,
