@@ -1,12 +1,13 @@
 import { useRoute } from '@react-navigation/native';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 
+import ActivityIndicatorModal from '../components/ActivityInndicatorModal';
 import Button from '../components/Button';
 import QuizCard from '../components/QuizCard';
 import { View } from '../components/Themed';
 import { quizCollectionTypes } from '../constants/Constants';
+import firebaseManager from '../firebase/index';
 import { HomeStackScreenProps } from '../navigation/types';
 import { QuizItem } from '../types';
 import { GlobalStyles } from '../utils/GlobalStyles';
@@ -21,25 +22,18 @@ const HomeScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
   const currentIndex = useRef(0);
   const [isPrevDisabled, setPrevDisabled] = useState(false);
   const [isNextDisabled, setNextDisabled] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [quizzes, setQuizzes] = useState<QuizItem[]>([]);
   const route = useRoute();
-
-  const db = getFirestore();
 
   useEffect(() => {
     fetchQuiz();
   }, []);
 
   const fetchQuiz = async () => {
-    const docRef = doc(db, quizCollectionTypes.quizzes, route?.params?.category);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      setQuizzes(docSnap.data()?.questions);
-    } else {
-      // doc.data() will be undefined in this case
-      console.log('No such document!');
-    }
+    const data = await firebaseManager.getDoc(quizCollectionTypes.quizzes, route?.params?.category);
+    setQuizzes(data ? data.questions : []);
+    setLoading(false);
   };
 
   const renderItem = ({ item, index }: RenderItemProps) => {
@@ -77,6 +71,7 @@ const HomeScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
 
   return (
     <View style={styles.container}>
+      <ActivityIndicatorModal isLoading={loading} />
       <FlatList
         ref={flatListRef}
         renderItem={renderItem}
