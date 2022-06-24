@@ -23,4 +23,9 @@ export const GlobalStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  linkStyle: {
+    color: 'blue',
+    textDecorationColor: 'blue',
+    textDecorationLine: 'underline',
+  },
 });

@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   text: {
-    color: Colors.tintColorLight,
+    color: '#fff',
     textAlign: 'center',
     fontSize: 16,
   },

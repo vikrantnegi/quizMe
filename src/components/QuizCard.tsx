@@ -1,5 +1,6 @@
+import isEmpty from 'lodash.isempty';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { Linking, StyleSheet, TouchableOpacity } from 'react-native';
 
 import Colors from '../constants/Colors';
 import { counterCircleSize, height, width } from '../constants/Layout';
@@ -34,6 +35,10 @@ const QuizCard = (props: Props) => {
     !isQuestionAnswered && dispatch(submitAnswer(answeredQuestion));
   };
 
+  const onLinkPress = () => {
+    Linking.openURL(item.knowMore.link);
+  };
+
   return (
     <View style={styles.container}>
       <View style={[styles.questionContainer, { backgroundColor: Colors.tintColorLight }]}>
@@ -54,6 +59,21 @@ const QuizCard = (props: Props) => {
           />
         );
       })}
+      {!isEmpty(item.knowMore) && isQuestionAnswered && (
+        <View style={styles.footer}>
+          {Boolean(item.knowMore.link) && (
+            <TouchableOpacity onPress={onLinkPress}>
+              <Text style={styles.textNote}>
+                Know More:
+                <Text style={GlobalStyles.linkStyle}> {item.knowMore.link}</Text>
+              </Text>
+            </TouchableOpacity>
+          )}
+          {Boolean(item.knowMore.description) && (
+            <Text style={styles.textNote}>{item.knowMore.description}</Text>
+          )}
+        </View>
+      )}
     </View>
   );
 };
@@ -87,6 +107,12 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
+  },
+  textNote: {
+    fontSize: 16,
+  },
+  footer: {
+    marginTop: 20,
   },
 });
 

@@ -27,7 +27,7 @@ const OptionCell = (props: Props) => {
       key={option.id}
       style={({ pressed }) => [
         styles.option,
-        pressed && styles.selectedStyle,
+        pressed && styles.pressedStyle,
         optionSelected && styles.incorrectStyle,
         correctOptionSelected && styles.selectedStyle,
       ]}
@@ -67,6 +67,10 @@ const styles = StyleSheet.create({
   },
   selectedTextStyle: {
     color: '#fff',
+  },
+  pressedStyle: {
+    backgroundColor: Colors.tintColorLight,
+    borderColor: Colors.tintColorLight,
   },
 });
 

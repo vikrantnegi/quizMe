@@ -3,6 +3,12 @@ export interface QuizItem {
   question: string;
   options: Option[];
   answer: Answer;
+  knowMore: KnowMore;
+}
+
+export interface KnowMore {
+  link: string;
+  description: string;
 }
 
 export interface Option {
