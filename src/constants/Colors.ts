@@ -3,7 +3,7 @@ const tintColorDark = '#fff';
 const selectedColor = '#5aa96b';
 const secondaryColor = '#0d2744';
 const disabledStyle = '#555';
-const red = '#ec355c';
+const red = '#D54826FF';
 
 export default {
   tintColorLight,

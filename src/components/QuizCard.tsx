@@ -35,6 +35,30 @@ const QuizCard = (props: Props) => {
     !isQuestionAnswered && dispatch(submitAnswer(answeredQuestion));
   };
 
+  const renderNote = () => {
+    const showNote = !isEmpty(item?.knowMore) && isQuestionAnswered;
+    const showLink = Boolean(item?.knowMore?.link);
+    const showDescription = Boolean(item?.knowMore?.description);
+
+    if (showNote) {
+      return (
+        <View style={styles.footer}>
+          {showLink && (
+            <TouchableOpacity onPress={onLinkPress}>
+              <Text style={styles.textNote}>
+                Know More:
+                <Text style={GlobalStyles.linkStyle}> {item.knowMore.link}</Text>
+              </Text>
+            </TouchableOpacity>
+          )}
+          {showDescription && <Text style={styles.textNote}>{item.knowMore.description}</Text>}
+        </View>
+      );
+    } else {
+      return null;
+    }
+  };
+
   const onLinkPress = () => {
     Linking.openURL(item.knowMore.link);
   };
@@ -59,21 +83,7 @@ const QuizCard = (props: Props) => {
           />
         );
       })}
-      {!isEmpty(item.knowMore) && isQuestionAnswered && (
-        <View style={styles.footer}>
-          {Boolean(item.knowMore.link) && (
-            <TouchableOpacity onPress={onLinkPress}>
-              <Text style={styles.textNote}>
-                Know More:
-                <Text style={GlobalStyles.linkStyle}> {item.knowMore.link}</Text>
-              </Text>
-            </TouchableOpacity>
-          )}
-          {Boolean(item.knowMore.description) && (
-            <Text style={styles.textNote}>{item.knowMore.description}</Text>
-          )}
-        </View>
-      )}
+      {renderNote()}
     </View>
   );
 };

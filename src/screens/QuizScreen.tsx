@@ -63,14 +63,19 @@ const QuizScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
     });
   };
 
-  const onViewableItemsChanged = useCallback(({ viewableItems }) => {
-    return (
-      viewableItems.length &&
-      ((currentIndex.current = viewableItems?.[0]?.index),
-      setPrevDisabled(currentIndex.current === 0),
-      setNextDisabled(currentIndex.current === quizzes.length - 1))
-    );
-  }, []);
+  const handleSubmitPress = () => {};
+
+  const onViewableItemsChanged = useCallback(
+    ({ viewableItems }) => {
+      return (
+        viewableItems.length &&
+        ((currentIndex.current = viewableItems?.[0]?.index),
+        setPrevDisabled(currentIndex.current === 0),
+        setNextDisabled(currentIndex.current === quizzes.length - 1))
+      );
+    },
+    [quizzes.length]
+  );
 
   if (loading) {
     return <ActivityIndicatorModal isLoading />;
@@ -86,6 +91,7 @@ const QuizScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
       </View>
     );
   }
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -107,10 +113,9 @@ const QuizScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
           disabled={isPrevDisabled}
         />
         <Button
-          title="NEXT"
-          onButtonPress={handleNextPress}
+          title={isNextDisabled ? 'SUBMIT' : 'NEXT'}
+          onButtonPress={isNextDisabled ? handleSubmitPress : handleNextPress}
           viewStyle={styles.btnStyle}
-          disabled={isNextDisabled}
         />
       </View>
     </View>

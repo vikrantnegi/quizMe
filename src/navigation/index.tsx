@@ -8,48 +8,64 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
 
+import LottieLoader from '../components/LottieLoader';
+import { View } from '../components/Themed';
+import { useAuthentication } from '../hooks/useAuthentication';
 import HomeScreen from '../screens/HomeScreen';
-import ModalScreen from '../screens/ModalScreen';
-import NotFoundScreen from '../screens/NotFoundScreen';
 import QuizScreen from '../screens/QuizScreen';
+import SignInScreen from '../screens/SignInScreen';
+import SignUpScreen from '../screens/SignUpScreen';
+import WelcomeScreen from '../screens/WelcomeScreen';
+import { GlobalStyles } from '../utils/GlobalStyles';
 import LinkingConfiguration from './LinkingConfiguration';
-import { HomeStackParamList, RootStackParamList } from './types';
+import { AuthStackParamList, HomeStackParamList } from './types';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+  const { user, isLoading } = useAuthentication();
+
+  const handleNavigation = () => {
+    if (isLoading) {
+      return (
+        <View style={[GlobalStyles.middle, { flex: 1 }]}>
+          <LottieLoader />
+        </View>
+      );
+    }
+    if (user) {
+      return <UserStackScreen />;
+    } else {
+      return <AuthStackScreen />;
+    }
+  };
+
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <RootNavigator />
+      {handleNavigation()}
     </NavigationContainer>
   );
 }
 
-/**
- * A root stack navigator is often used for displaying modals on top of all other content.
- * https://reactnavigation.org/docs/modal
- */
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 
-function RootNavigator() {
+const AuthStackScreen = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Root" component={HomeStackScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
-    </Stack.Navigator>
+    <AuthStack.Navigator>
+      <AuthStack.Screen name="Welcome" component={WelcomeScreen} />
+      <AuthStack.Screen name="SignIn" component={SignInScreen} />
+      <AuthStack.Screen name="SignUp" component={SignUpScreen} />
+    </AuthStack.Navigator>
   );
-}
+};
 
-const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+const UserStack = createNativeStackNavigator<HomeStackParamList>();
 
-const HomeStackScreen = () => {
+const UserStackScreen = () => {
   return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen name="Home" component={HomeScreen} />
-      <HomeStack.Screen name="Quiz" component={QuizScreen} />
-    </HomeStack.Navigator>
+    <UserStack.Navigator>
+      <UserStack.Screen name="Home" component={HomeScreen} />
+      <UserStack.Screen name="Quiz" component={QuizScreen} />
+    </UserStack.Navigator>
   );
 };

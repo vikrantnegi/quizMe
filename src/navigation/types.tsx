@@ -6,22 +6,11 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
-  }
-}
-
-export type RootStackParamList = {
-  Root: NavigatorScreenParams<HomeStackParamList> | undefined;
-  Modal: undefined;
-  NotFound: undefined;
-};
-
-export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
-  RootStackParamList,
-  Screen
->;
+// declare global {
+//   namespace ReactNavigation {
+//     interface RootParamList extends RootStackParamList {}
+//   }
+// }
 
 export type HomeStackParamList = {
   Home: undefined;
@@ -30,5 +19,16 @@ export type HomeStackParamList = {
 
 export type HomeStackScreenProps<Screen extends keyof HomeStackParamList> = NativeStackScreenProps<
   HomeStackParamList,
+  Screen
+>;
+
+export type AuthStackParamList = {
+  Welcome: undefined;
+  SignIn: undefined;
+  SignUp: undefined;
+};
+
+export type AuthStackScreenProps<Screen extends keyof AuthStackParamList> = NativeStackScreenProps<
+  AuthStackParamList,
   Screen
 >;

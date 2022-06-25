@@ -4,7 +4,7 @@ import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
 import { View } from './Themed';
 
-function WrapperComp(ScreenComp) {
+function SafeAreaWrapper(ScreenComp) {
   return (props) => {
     return (
       <SafeAreaInsetsContext.Consumer>
@@ -24,4 +24,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WrapperComp;
+export default SafeAreaWrapper;

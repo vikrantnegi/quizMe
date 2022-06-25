@@ -1,17 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useHeaderHeight } from '@react-navigation/elements';
 import React from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { height, width } from '../constants/Layout';
+import LottieLoader from './LottieLoader';
+import { View } from './Themed';
 
 function ActivityIndicatorModal({ isLoading = false, viewStyle = {} }) {
+  const headerHeight = useHeaderHeight();
+
   if (!isLoading) {
     return null;
   }
 
   return (
-    <View style={[styles.modalBackground, viewStyle]}>
-      <ActivityIndicator size="large" />
+    <View style={[styles.modalBackground, { height: height - headerHeight }, viewStyle]}>
+      <LottieLoader />
     </View>
   );
 }
@@ -19,7 +24,6 @@ function ActivityIndicatorModal({ isLoading = false, viewStyle = {} }) {
 const styles = StyleSheet.create({
   modalBackground: {
     position: 'absolute',
-    backgroundColor: 'transparent',
     height,
     width,
     justifyContent: 'center',
