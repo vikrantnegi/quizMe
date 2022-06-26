@@ -35,7 +35,7 @@ const HomeScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
   const renderHeader = () => {
     return (
       <View style={styles.headerContainer}>
-        <Text style={styles.heading}>Hi {firebaseManager.user?.displayName}</Text>
+        <Text style={styles.heading}>Hi {firebaseManager.user?.email?.split('@').shift()}</Text>
       </View>
     );
   };
@@ -50,7 +50,7 @@ const HomeScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
 
   return (
     <View style={styles.container}>
-      {renderHeader()}
+      {firebaseManager.user && renderHeader()}
       <FlatList
         data={quizCategories}
         renderItem={renderItem}

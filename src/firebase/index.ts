@@ -1,4 +1,9 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, User } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  User,
+} from 'firebase/auth';
 import {
   arrayUnion,
   doc,
@@ -54,6 +59,19 @@ class firebaseManager {
   getCollection = async (collectionName: string) => {
     const quizCollectionSnapshot = await getDocs(collection(this.db, collectionName));
     return quizCollectionSnapshot;
+  };
+
+  authChangeListener = (onSuccess: (user: User) => void, onError: (user: null) => void) => {
+    return onAuthStateChanged(auth, (user) => {
+      if (user) {
+        onSuccess?.(user);
+        this.user = user;
+      } else {
+        // User is signed out
+        this.user = null;
+        onError?.(null);
+      }
+    });
   };
 
   createUserUsingEmail = async (
