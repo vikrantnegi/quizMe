@@ -13,12 +13,12 @@ const WelcomeScreen = ({ navigation }: AuthStackScreenProps<'Welcome'>) => {
         <Button
           title="Sign in"
           viewStyle={styles.button}
-          onButtonPress={() => navigation.navigate('SignIn')}
+          onPress={() => navigation.navigate('SignIn')}
         />
         <Button
           title="Sign up"
           viewStyle={styles.button}
-          onButtonPress={() => navigation.navigate('SignUp')}
+          onPress={() => navigation.navigate('SignUp')}
         />
       </View>
     </View>

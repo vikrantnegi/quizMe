@@ -1,41 +1,97 @@
 import * as React from 'react';
 import {
-  Pressable,
+  ActivityIndicator,
+  ActivityIndicatorProps,
+  StyleProp,
   StyleSheet,
   TextStyle,
-  Touchable,
   TouchableOpacity,
+  TouchableOpacityProps,
   ViewStyle,
 } from 'react-native';
 
 import Colors from '../constants/Colors';
+import LottieLoader from './LottieLoader';
 import { Text } from './Themed';
 
-type Props = {
+export interface Props extends TouchableOpacityProps {
   title: string;
-  viewStyle?: ViewStyle;
-  textStyle?: TextStyle;
-  onButtonPress: () => void;
+  viewStyle?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
-};
+  type?: 'solid' | 'outlined';
+  loading?: boolean;
+  loadingProps?: ActivityIndicatorProps;
+}
+
+const defaultLoadingProps = (type: 'solid' | 'outlined'): ActivityIndicatorProps => ({
+  color: type === 'solid' ? 'white' : Colors.secondaryColor,
+  size: 'small',
+});
 
 const Button = (props: Props) => {
   const {
     title,
     viewStyle = {},
     textStyle = {},
-    onButtonPress = () => {},
+    onPress = () => {},
     disabled = false,
+    type = 'solid',
+    loading = false,
+    loadingProps: passedLoadingProps,
   } = props;
+
+  const handleOnPress = React.useCallback(
+    (evt) => {
+      if (!loading && !disabled) {
+        onPress(evt);
+      }
+    },
+    [disabled, loading, onPress]
+  );
+
+  const loadingProps: ActivityIndicatorProps = React.useMemo(
+    () => ({
+      ...defaultLoadingProps(type),
+      ...passedLoadingProps,
+    }),
+    [passedLoadingProps, type]
+  );
 
   return (
     <TouchableOpacity
       {...props}
       activeOpacity={0.8}
-      style={[styles.container, viewStyle, disabled && styles.disabled]}
-      onPress={onButtonPress}
+      style={StyleSheet.flatten([
+        styles.container,
+        {
+          backgroundColor: type === 'solid' ? Colors.secondaryColor : 'transparent',
+          borderWidth: type === 'outlined' ? 1 : 0,
+          borderColor: Colors.secondaryColor,
+        },
+        disabled &&
+          type === 'solid' && {
+            backgroundColor: Colors.disabledStyle,
+          },
+        viewStyle,
+        disabled && styles.disabled,
+      ])}
+      onPress={handleOnPress}
       disabled={disabled}>
-      <Text style={[styles.text, textStyle, disabled && styles.textDisabled]}>{title}</Text>
+      {!loading && (
+        <Text
+          style={StyleSheet.flatten([
+            styles.text,
+            { color: type === 'solid' ? '#fff' : Colors.secondaryColor },
+            textStyle,
+            disabled && styles.textDisabled,
+          ])}>
+          {title}
+        </Text>
+      )}
+      {loading && (
+        <ActivityIndicator color={loadingProps.color} size={loadingProps.size} {...loadingProps} />
+      )}
     </TouchableOpacity>
   );
 };

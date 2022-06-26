@@ -3,14 +3,14 @@ import isEmpty from 'lodash.isempty';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 
-import ActivityIndicatorModal from '../components/ActivityInndicatorModal';
+import ActivityIndicatorModal from '../components/ActivityIndicatorModal';
 import Button from '../components/Button';
 import QuizCard from '../components/QuizCard';
 import WrapperComp from '../components/SafeAreaWraper';
 import { Text, View } from '../components/Themed';
 import { quizCollectionTypes } from '../constants/Constants';
 import firebaseManager from '../firebase/index';
-import { HomeStackScreenProps } from '../navigation/types';
+import { HomeStackScreenProps, QuizScreenRouteProp } from '../navigation/types';
 import { QuizItem } from '../types';
 import { GlobalStyles } from '../utils/GlobalStyles';
 
@@ -19,14 +19,14 @@ type RenderItemProps = {
   index: number;
 };
 
-const QuizScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
+const QuizScreen = ({ navigation }: HomeStackScreenProps<'Quiz'>) => {
   const flatListRef = useRef<FlatList>(null);
   const currentIndex = useRef(0);
   const [isPrevDisabled, setPrevDisabled] = useState(false);
   const [isNextDisabled, setNextDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [quizzes, setQuizzes] = useState<QuizItem[]>([]);
-  const route = useRoute();
+  const route = useRoute<QuizScreenRouteProp>();
 
   useEffect(() => {
     fetchQuiz();
@@ -86,7 +86,7 @@ const QuizScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
       <View style={styles.emptyContainer}>
         <View>
           <Text style={styles.text}>No Quiz Available right now</Text>
-          <Button title="Try Again" onButtonPress={fetchQuiz} viewStyle={{ alignSelf: 'center' }} />
+          <Button title="Try Again" onPress={fetchQuiz} viewStyle={{ alignSelf: 'center' }} />
         </View>
       </View>
     );
@@ -108,13 +108,13 @@ const QuizScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
       <View style={GlobalStyles.rowSpaceBetween}>
         <Button
           title="PREVIOUS"
-          onButtonPress={handlePreviousPress}
+          onPress={handlePreviousPress}
           viewStyle={styles.btnStyle}
           disabled={isPrevDisabled}
         />
         <Button
           title={isNextDisabled ? 'SUBMIT' : 'NEXT'}
-          onButtonPress={isNextDisabled ? handleSubmitPress : handleNextPress}
+          onPress={isNextDisabled ? handleSubmitPress : handleNextPress}
           viewStyle={styles.btnStyle}
         />
       </View>

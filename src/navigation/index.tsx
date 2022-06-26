@@ -63,7 +63,7 @@ const UserStack = createNativeStackNavigator<HomeStackParamList>();
 
 const UserStackScreen = () => {
   return (
-    <UserStack.Navigator>
+    <UserStack.Navigator screenOptions={{ headerBackTitleVisible: false }}>
       <UserStack.Screen name="Home" component={HomeScreen} />
       <UserStack.Screen name="Quiz" component={QuizScreen} />
     </UserStack.Navigator>

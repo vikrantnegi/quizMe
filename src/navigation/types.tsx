@@ -3,7 +3,7 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
-import { NavigatorScreenParams } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 // declare global {
@@ -14,7 +14,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type HomeStackParamList = {
   Home: undefined;
-  Quiz: undefined;
+  Quiz: { category: string };
 };
 
 export type HomeStackScreenProps<Screen extends keyof HomeStackParamList> = NativeStackScreenProps<
@@ -32,3 +32,5 @@ export type AuthStackScreenProps<Screen extends keyof AuthStackParamList> = Nati
   AuthStackParamList,
   Screen
 >;
+
+export type QuizScreenRouteProp = RouteProp<HomeStackParamList, 'Quiz'>;

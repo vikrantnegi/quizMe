@@ -1,4 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
+import { LogBox } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 
@@ -7,6 +8,8 @@ import useCachedResources from './src/hooks/useCachedResources';
 import useColorScheme from './src/hooks/useColorScheme';
 import Navigation from './src/navigation';
 import store from './src/store';
+
+LogBox.ignoreLogs(["exported from 'deprecated-react-native-prop-types'."]);
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

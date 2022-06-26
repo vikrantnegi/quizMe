@@ -1,12 +1,10 @@
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 
 import Button from '../components/Button';
 import { Text, View } from '../components/Themed';
 import Colors from '../constants/Colors';
-
-const auth = getAuth();
+import firebaseManager, { AuthEventError } from '../firebase';
 
 const SignInScreen = () => {
   const [value, setValue] = React.useState({
@@ -14,8 +12,21 @@ const SignInScreen = () => {
     password: '',
     error: '',
   });
+  const [loading, setLoading] = useState(false);
 
-  async function signIn() {
+  const signInError = (error: AuthEventError) => {
+    setValue({
+      ...value,
+      error: error.message,
+    });
+    setLoading(false);
+  };
+
+  const onSignInSuccess = () => {
+    setLoading(false);
+  };
+
+  function signIn() {
     if (value.email === '' || value.password === '') {
       setValue({
         ...value,
@@ -23,15 +34,8 @@ const SignInScreen = () => {
       });
       return;
     }
-
-    try {
-      await signInWithEmailAndPassword(auth, value.email, value.password);
-    } catch (error) {
-      setValue({
-        ...value,
-        error: error.message,
-      });
-    }
+    setLoading(true);
+    firebaseManager.signInUsingEmail(value.email, value.password, onSignInSuccess, signInError);
   }
 
   return (
@@ -60,7 +64,7 @@ const SignInScreen = () => {
             <Text style={styles.errorText}>{value.error}</Text>
           </View>
         )}
-        <Button title="Sign in" onButtonPress={signIn} />
+        <Button title="Sign in" onPress={signIn} loading={loading} />
       </View>
     </View>
   );
@@ -70,7 +74,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
-    backgroundColor: '#fff',
     paddingHorizontal: 15,
   },
   controls: {

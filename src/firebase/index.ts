@@ -1,3 +1,4 @@
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, User } from 'firebase/auth';
 import {
   arrayUnion,
   doc,
@@ -9,8 +10,16 @@ import {
   collection,
 } from 'firebase/firestore';
 
+import { auth } from '../config/firebase';
+
+export type AuthEventError = {
+  code: string;
+  message: string;
+};
+
 class firebaseManager {
   db: Firestore;
+  user: User | null = null;
 
   constructor() {
     this.db = getFirestore();
@@ -45,6 +54,40 @@ class firebaseManager {
   getCollection = async (collectionName: string) => {
     const quizCollectionSnapshot = await getDocs(collection(this.db, collectionName));
     return quizCollectionSnapshot;
+  };
+
+  createUserUsingEmail = async (
+    email: string,
+    password: string,
+    onSuccess: () => void,
+    onError: (error: AuthEventError) => void
+  ) => {
+    try {
+      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+      this.user = userCredentials.user;
+      onSuccess?.();
+    } catch (error: any) {
+      onError?.(error);
+    }
+  };
+
+  signInUsingEmail = async (
+    email: string,
+    password: string,
+    onSuccess: () => void,
+    onError: (error: AuthEventError) => void
+  ) => {
+    try {
+      const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+      this.user = userCredentials.user;
+      onSuccess?.();
+    } catch (error: any) {
+      onError?.(error);
+    }
+  };
+
+  signOut = () => {
+    auth.signOut();
   };
 }
 

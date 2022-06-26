@@ -1,11 +1,16 @@
 import AnimatedLottieView from 'lottie-react-native';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 import images from '../utils/Images';
 
-function LottieLoader() {
-  return <AnimatedLottieView autoPlay style={styles.loader} source={images.loader} />;
+type Props = {
+  style?: StyleProp<ViewStyle>;
+};
+
+function LottieLoader(props: Props) {
+  const { style } = props;
+  return <AnimatedLottieView autoPlay style={[styles.loader, style]} source={images.loader} />;
 }
 
 const styles = StyleSheet.create({

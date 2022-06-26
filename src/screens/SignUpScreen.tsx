@@ -1,20 +1,40 @@
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 
 import Button from '../components/Button';
 import { Text, View } from '../components/Themed';
 import Colors from '../constants/Colors';
+import firebaseManager, { AuthEventError } from '../firebase';
 import { AuthStackScreenProps } from '../navigation/types';
 
-const auth = getAuth();
-
 const SignUpScreen = ({ navigation }: AuthStackScreenProps<'SignUp'>) => {
-  const [value, setValue] = React.useState({
+  const [value, setValue] = useState({
     email: '',
     password: '',
     error: '',
   });
+  const [loading, setLoading] = useState(false);
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    isMounted.current = true;
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  const onSignUpError = (error: AuthEventError) => {
+    setValue({
+      ...value,
+      error: error.message,
+    });
+    setLoading(false);
+  };
+
+  const onSignUpSuccess = () => {
+    isMounted.current && setLoading(false);
+  };
 
   async function signUp() {
     if (value.email === '' || value.password === '') {
@@ -24,16 +44,13 @@ const SignUpScreen = ({ navigation }: AuthStackScreenProps<'SignUp'>) => {
       });
       return;
     }
-
-    try {
-      await createUserWithEmailAndPassword(auth, value.email, value.password);
-      navigation.navigate('SignIn');
-    } catch (error) {
-      setValue({
-        ...value,
-        error: error.message,
-      });
-    }
+    setLoading(true);
+    firebaseManager.createUserUsingEmail(
+      value.email,
+      value.password,
+      onSignUpSuccess,
+      onSignUpError
+    );
   }
 
   return (
@@ -62,7 +79,7 @@ const SignUpScreen = ({ navigation }: AuthStackScreenProps<'SignUp'>) => {
             <Text style={styles.errorText}>{value.error}</Text>
           </View>
         )}
-        <Button title="Sign up" onButtonPress={signUp} />
+        <Button title="Sign up" onPress={signUp} loading={loading} />
       </View>
     </View>
   );
