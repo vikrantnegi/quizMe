@@ -3,8 +3,9 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import Colors from '../constants/Colors';
+import { HomeStackScreenProps } from '../navigation/types';
 import { GlobalStyles } from '../utils/GlobalStyles';
-import { Text, View } from './Themed';
+import { Text } from './Themed';
 
 type Props = {
   category: string;
@@ -12,7 +13,7 @@ type Props = {
 
 const CategoryCard = (props: Props) => {
   const { category } = props;
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeStackScreenProps<'Home'>['navigation']>();
 
   const handleOnPress = () => {
     navigation.navigate('Quiz', {

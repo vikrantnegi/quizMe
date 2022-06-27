@@ -7,9 +7,8 @@ import CategoryCard from '../components/CategoryCard';
 import { Text, View } from '../components/Themed';
 import { quizCollectionTypes } from '../constants/Constants';
 import firebaseManager from '../firebase';
-import { HomeStackScreenProps } from '../navigation/types';
 
-const HomeScreen = ({ navigation }: HomeStackScreenProps<'Home'>) => {
+const HomeScreen = () => {
   const [quizCategories, setQuizCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 

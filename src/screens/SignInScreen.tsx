@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 
 import Button from '../components/Button';
@@ -13,6 +13,15 @@ const SignInScreen = () => {
     error: '',
   });
   const [loading, setLoading] = useState(false);
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    isMounted.current = true;
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const signInError = (error: AuthEventError) => {
     setValue({
@@ -23,7 +32,7 @@ const SignInScreen = () => {
   };
 
   const onSignInSuccess = () => {
-    setLoading(false);
+    isMounted.current && setLoading(false);
   };
 
   function signIn() {

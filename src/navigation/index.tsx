@@ -11,43 +11,65 @@ import { View } from '../components/Themed';
 import Colors from '../constants/Colors';
 import { useAuthentication } from '../hooks/useAuthentication';
 import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 import QuizScreen from '../screens/QuizScreen';
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import { GlobalStyles } from '../utils/GlobalStyles';
 import LinkingConfiguration from './LinkingConfiguration';
-import { AuthStackParamList, HomeStackParamList } from './types';
+import {
+  AuthStackParamList,
+  DrawerParamList,
+  HomeStackParamList,
+  RootStackParamList,
+} from './types';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { user, isLoading } = useAuthentication();
+  console.log({ user });
 
-  const handleNavigation = () => {
-    if (isLoading) {
+  const handleNavigator = () => {
+    if (isLoading && !user) {
       return (
         <View style={[GlobalStyles.middle, { flex: 1 }]}>
           <LottieLoader />
         </View>
       );
     }
-    if (user) {
-      return <DrawerStack />;
-    } else {
-      return <AuthStackScreen />;
-    }
+    return <RootStackScreen />;
   };
 
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {handleNavigation()}
+      {handleNavigator()}
     </NavigationContainer>
   );
 }
 
-const Drawer = createDrawerNavigator();
+const RootStack = createNativeStackNavigator<RootStackParamList>();
+
+const RootStackScreen = () => {
+  const { user } = useAuthentication();
+
+  const handleNavigation = () => {
+    if (user) {
+      return <RootStack.Screen name="Root" component={DrawerStack} />;
+    } else {
+      return <RootStack.Screen name="Auth" component={AuthStackScreen} />;
+    }
+  };
+
+  return (
+    <RootStack.Navigator screenOptions={{ headerShown: false }}>
+      {handleNavigation()}
+    </RootStack.Navigator>
+  );
+};
+
+const Drawer = createDrawerNavigator<DrawerParamList>();
 
 const DrawerStack = () => {
   return (
@@ -59,7 +81,7 @@ const DrawerStack = () => {
         headerBackVisible: true,
       })}>
       <Drawer.Screen options={{ headerShown: false }} name="User" component={UserStackScreen} />
-      <Drawer.Screen name="Profile" component={TabTwoScreen} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
     </Drawer.Navigator>
   );
 };

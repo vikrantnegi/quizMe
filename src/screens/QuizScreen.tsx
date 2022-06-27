@@ -1,4 +1,3 @@
-import { useRoute } from '@react-navigation/native';
 import isEmpty from 'lodash.isempty';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
@@ -10,7 +9,7 @@ import WrapperComp from '../components/SafeAreaWraper';
 import { Text, View } from '../components/Themed';
 import { quizCollectionTypes } from '../constants/Constants';
 import firebaseManager from '../firebase/index';
-import { HomeStackScreenProps, QuizScreenRouteProp } from '../navigation/types';
+import { HomeStackScreenProps } from '../navigation/types';
 import { QuizItem } from '../types';
 import { GlobalStyles } from '../utils/GlobalStyles';
 
@@ -19,14 +18,13 @@ type RenderItemProps = {
   index: number;
 };
 
-const QuizScreen = ({ navigation }: HomeStackScreenProps<'Quiz'>) => {
+const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
   const flatListRef = useRef<FlatList>(null);
   const currentIndex = useRef(0);
   const [isPrevDisabled, setPrevDisabled] = useState(false);
   const [isNextDisabled, setNextDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [quizzes, setQuizzes] = useState<QuizItem[]>([]);
-  const route = useRoute<QuizScreenRouteProp>();
 
   useEffect(() => {
     fetchQuiz();
