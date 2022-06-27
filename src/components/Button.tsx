@@ -9,9 +9,10 @@ import {
   TouchableOpacityProps,
   ViewStyle,
 } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 
 import Colors from '../constants/Colors';
-import LottieLoader from './LottieLoader';
+import { NetWorkStatusConsumer } from '../context/NetworkContext';
 import { Text } from './Themed';
 
 export interface Props extends TouchableOpacityProps {
@@ -42,8 +43,14 @@ const Button = (props: Props) => {
   } = props;
 
   const handleOnPress = React.useCallback(
-    (evt) => {
-      if (!loading && !disabled) {
+    (evt, isConnectionAvailable) => {
+      if (!isConnectionAvailable) {
+        return showMessage({
+          message: 'No Internet Available',
+          description: 'Make sure Wi-Fi mobile data is turned on',
+        });
+      }
+      if (!loading && !disabled && isConnectionAvailable) {
         onPress(evt);
       }
     },
@@ -59,40 +66,48 @@ const Button = (props: Props) => {
   );
 
   return (
-    <TouchableOpacity
-      {...props}
-      activeOpacity={0.8}
-      style={StyleSheet.flatten([
-        styles.container,
-        {
-          backgroundColor: type === 'solid' ? Colors.secondaryColor : 'transparent',
-          borderWidth: type === 'outlined' ? 1 : 0,
-          borderColor: Colors.secondaryColor,
-        },
-        disabled &&
-          type === 'solid' && {
-            backgroundColor: Colors.disabledStyle,
-          },
-        viewStyle,
-        disabled && styles.disabled,
-      ])}
-      onPress={handleOnPress}
-      disabled={disabled}>
-      {!loading && (
-        <Text
+    <NetWorkStatusConsumer>
+      {(value) => (
+        <TouchableOpacity
+          {...props}
+          activeOpacity={0.8}
           style={StyleSheet.flatten([
-            styles.text,
-            { color: type === 'solid' ? '#fff' : Colors.secondaryColor },
-            textStyle,
-            disabled && styles.textDisabled,
-          ])}>
-          {title}
-        </Text>
+            styles.container,
+            {
+              backgroundColor: type === 'solid' ? Colors.secondaryColor : 'transparent',
+              borderWidth: type === 'outlined' ? 1 : 0,
+              borderColor: Colors.secondaryColor,
+            },
+            disabled &&
+              type === 'solid' && {
+                backgroundColor: Colors.disabledStyle,
+              },
+            viewStyle,
+            disabled && styles.disabled,
+          ])}
+          onPress={(evt) => handleOnPress(evt, value)}
+          disabled={disabled}>
+          {!loading && (
+            <Text
+              style={StyleSheet.flatten([
+                styles.text,
+                { color: type === 'solid' ? '#fff' : Colors.secondaryColor },
+                textStyle,
+                disabled && styles.textDisabled,
+              ])}>
+              {title}
+            </Text>
+          )}
+          {loading && (
+            <ActivityIndicator
+              color={loadingProps.color}
+              size={loadingProps.size}
+              {...loadingProps}
+            />
+          )}
+        </TouchableOpacity>
       )}
-      {loading && (
-        <ActivityIndicator color={loadingProps.color} size={loadingProps.size} {...loadingProps} />
-      )}
-    </TouchableOpacity>
+    </NetWorkStatusConsumer>
   );
 };
 
