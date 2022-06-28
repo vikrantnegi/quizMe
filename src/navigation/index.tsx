@@ -12,6 +12,7 @@ import Colors from '../constants/Colors';
 import { useAuthentication } from '../hooks/useAuthentication';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import QuizListing from '../screens/QuizListing';
 import QuizScreen from '../screens/QuizScreen';
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
@@ -27,7 +28,6 @@ import {
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const { user, isLoading } = useAuthentication();
-  console.log({ user });
 
   const handleNavigator = () => {
     if (isLoading && !user) {
@@ -63,7 +63,7 @@ const RootStackScreen = () => {
   };
 
   return (
-    <RootStack.Navigator screenOptions={{ headerShown: false }}>
+    <RootStack.Navigator screenOptions={{ headerShown: false, animation: 'fade' }}>
       {handleNavigation()}
     </RootStack.Navigator>
   );
@@ -115,6 +115,7 @@ const UserStackScreen = () => {
         name="Home"
         component={HomeScreen}
       />
+      <UserStack.Screen name="QuizListing" component={QuizListing} />
       <UserStack.Screen name="Quiz" component={QuizScreen} />
     </UserStack.Navigator>
   );

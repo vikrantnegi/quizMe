@@ -18,7 +18,9 @@ const HomeScreen = () => {
 
   const fetchQuizCategories = async () => {
     setLoading(true);
-    const quizCollectionSnapshot = await firebaseManager.getCollection(quizCollectionTypes.quizzes);
+    const quizCollectionSnapshot = await firebaseManager.getAllDocFromCollection(
+      quizCollectionTypes.quizzes
+    );
     const quizCategories: string[] = [];
     quizCollectionSnapshot.forEach((doc) => {
       return quizCategories.push(doc.id);

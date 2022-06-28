@@ -8,22 +8,24 @@ import { GlobalStyles } from '../utils/GlobalStyles';
 import { Text } from './Themed';
 
 type Props = {
+  item: string;
   category: string;
 };
 
-const CategoryCard = (props: Props) => {
-  const { category } = props;
-  const navigation = useNavigation<HomeStackScreenProps<'Home'>['navigation']>();
+const QuizListingItem = (props: Props) => {
+  const { item, category } = props;
+  const navigation = useNavigation<HomeStackScreenProps<'QuizListing'>['navigation']>();
 
   const handleOnPress = () => {
-    navigation.navigate('QuizListing', {
+    navigation.navigate('Quiz', {
       category,
+      quizSubCategory: item,
     });
   };
 
   return (
     <TouchableOpacity style={styles.container} activeOpacity={0.7} onPress={handleOnPress}>
-      <Text style={styles.text}>{category}</Text>
+      <Text style={styles.text}>{item}</Text>
     </TouchableOpacity>
   );
 };
@@ -31,11 +33,11 @@ const CategoryCard = (props: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 7.5,
+    marginHorizontal: 15,
     marginBottom: 15,
     backgroundColor: Colors.tintColorLight,
     borderRadius: 3,
-    height: 100,
+    paddingVertical: 15,
     ...GlobalStyles.middle,
     ...GlobalStyles.shadow,
   },
@@ -45,4 +47,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(CategoryCard);
+export default React.memo(QuizListingItem);

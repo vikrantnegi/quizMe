@@ -33,7 +33,7 @@ const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
   const fetchQuiz = async () => {
     setLoading(true);
     const data = await firebaseManager.getDoc(quizCollectionTypes.quizzes, route?.params?.category);
-    setQuizzes(isEmpty(data) ? [] : data.questions);
+    setQuizzes(isEmpty(data) ? [] : data && data[route?.params?.quizSubCategory]);
     setLoading(false);
   };
 
@@ -51,7 +51,7 @@ const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
     });
   };
 
-  const handleNextPress = () => {
+  const handleNextPress = async () => {
     if (currentIndex.current === quizzes.length - 1) {
       return;
     }

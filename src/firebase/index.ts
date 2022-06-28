@@ -30,17 +30,27 @@ class firebaseManager {
     this.db = getFirestore();
   }
 
-  handleAddDoc = async (collection: string, document: string, data: []) => {
+  handleAddDoc = async (
+    documentKey: string,
+    collection: string,
+    document: string,
+    data: object[]
+  ) => {
     const docRef = doc(this.db, collection, document);
     await updateDoc(docRef, {
-      questions: data,
+      [documentKey]: data,
     });
   };
 
-  handleUpdateDoc = async (collectionName: string, documentName: string, data: object) => {
+  handleUpdateDoc = async (
+    documentKey: string,
+    collectionName: string,
+    documentName: string,
+    data: object
+  ) => {
     const docRef = doc(this.db, collectionName, documentName);
     await updateDoc(docRef, {
-      questions: arrayUnion(data),
+      [documentKey]: arrayUnion(data),
     });
   };
 
@@ -56,7 +66,7 @@ class firebaseManager {
     }
   };
 
-  getCollection = async (collectionName: string) => {
+  getAllDocFromCollection = async (collectionName: string) => {
     const quizCollectionSnapshot = await getDocs(collection(this.db, collectionName));
     return quizCollectionSnapshot;
   };
