@@ -10,11 +10,16 @@ type Props = {
   option: Option;
   item: QuizItem;
   handleSubmitAnswer: (option: Option) => void;
+  subCategory: string;
 };
 
 const OptionCell = (props: Props) => {
-  const { option, item, handleSubmitAnswer } = props;
-  const answers = useAppSelector((state) => state.questions);
+  const { option, item, handleSubmitAnswer, subCategory } = props;
+  const answers =
+    useAppSelector(
+      (state) => state.answeredQuizzes.find((item) => item.subCategory === subCategory)?.questions
+    ) ?? [];
+
   const optionSelectedId = answers
     .filter((answer) => answer.question.id === item.id)
     .find((answer) => answer.question.id === item.id)?.selectedOptionId;
@@ -36,7 +41,7 @@ const OptionCell = (props: Props) => {
         <Text
           style={[
             styles.textSmall,
-            (pressed || optionSelected || correctOptionSelected) && styles.selectedTextStyle,
+            // (pressed || optionSelected || correctOptionSelected) && styles.selectedTextStyle,
           ]}>
           {option.value}
         </Text>

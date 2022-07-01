@@ -6,7 +6,7 @@ import Colors from '../constants/Colors';
 import { counterCircleSize, height, width } from '../constants/Layout';
 import { submitAnswer } from '../features/quizSlice';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { Option, QuizItem } from '../types';
+import { Option, QuizItem, SubmittedItemAnswer } from '../types';
 import { GlobalStyles } from '../utils/GlobalStyles';
 import OptionCell from './OptionCell';
 import { Text, View } from './Themed';
@@ -15,19 +15,24 @@ type Props = {
   item: QuizItem;
   index: number;
   quizzes: QuizItem[];
+  subCategory: string;
 };
 
 const QuizCard = (props: Props) => {
-  const { item, index, quizzes } = props;
+  const { item, index, quizzes, subCategory } = props;
   const dispatch = useAppDispatch();
-  const answers = useAppSelector((state) => state.questions);
+  const answers =
+    useAppSelector(
+      (state) => state.answeredQuizzes.find((item) => item.subCategory === subCategory)?.questions
+    ) ?? [];
 
   const isQuestionAnswered = answers.some(
-    (answer) => answer.question.id === item.id && answer.isQuestionAnswered
+    (answer: SubmittedItemAnswer) => answer.question.id === item.id && answer.isQuestionAnswered
   );
 
   const handleSubmitAnswer = (option: Option) => {
     const answeredQuestion = {
+      subCategory,
       selectedOptionId: option.id,
       isQuestionAnswered: true,
       question: item,
@@ -80,6 +85,7 @@ const QuizCard = (props: Props) => {
             option={option}
             item={item}
             handleSubmitAnswer={handleSubmitAnswer}
+            subCategory={subCategory}
           />
         );
       })}

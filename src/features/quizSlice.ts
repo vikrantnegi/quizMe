@@ -1,26 +1,34 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { SubmittedItem } from '../types';
+import { SubmittedItem, SubmittedItemAnswer } from '../types';
 
 interface QuizState {
-  questions: SubmittedItem[];
+  answeredQuizzes: SubmittedItem[];
 }
+
 const initialState: QuizState = {
-  questions: [],
+  answeredQuizzes: [],
 };
 
 export const quizSlice = createSlice({
   name: 'quiz',
   initialState,
   reducers: {
-    submitAnswer: (state, action: PayloadAction<SubmittedItem>) => {
+    submitAnswer: (state, action: PayloadAction<SubmittedItemAnswer>) => {
       const answeredQuestion = action.payload;
-      state.questions.push(answeredQuestion);
-      const ids = state.questions.map((o) => o.question.id);
-      const newState = state.questions.filter(
-        (question, index) => !ids.includes(question.question.id, index + 1)
+
+      const subCategoryExists = state.answeredQuizzes.find(
+        (quiz) => quiz.subCategory === answeredQuestion.subCategory
       );
-      state.questions = newState;
+
+      if (subCategoryExists) {
+        subCategoryExists.questions.push(answeredQuestion);
+      } else {
+        state.answeredQuizzes.push({
+          subCategory: answeredQuestion.subCategory,
+          questions: [answeredQuestion],
+        });
+      }
     },
   },
 });

@@ -33,12 +33,25 @@ const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
   const fetchQuiz = async () => {
     setLoading(true);
     const data = await firebaseManager.getDoc(quizCollectionTypes.quizzes, route?.params?.category);
-    setQuizzes(isEmpty(data) ? [] : data && data[route?.params?.quizSubCategory]);
+
+    const quiz = {
+      id: route?.params?.category,
+      questions: isEmpty(data) ? [] : data && data[route?.params?.quizSubCategory],
+    };
+
+    setQuizzes(quiz.questions);
     setLoading(false);
   };
 
   const renderItem = ({ item, index }: RenderItemProps) => {
-    return <QuizCard item={item} index={index} quizzes={quizzes} />;
+    return (
+      <QuizCard
+        item={item}
+        index={index}
+        quizzes={quizzes}
+        subCategory={route?.params?.quizSubCategory}
+      />
+    );
   };
 
   const handlePreviousPress = () => {
