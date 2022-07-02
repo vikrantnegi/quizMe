@@ -1,7 +1,6 @@
 import isEmpty from 'lodash.isempty';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
-import { showMessage } from 'react-native-flash-message';
 
 import ActivityIndicatorModal from '../components/ActivityIndicatorModal';
 import Button from '../components/Button';
@@ -12,7 +11,7 @@ import { quizCollectionTypes } from '../constants/Constants';
 import firebaseManager from '../firebase/index';
 import { useAppSelector } from '../hooks/redux';
 import { HomeStackScreenProps } from '../navigation/types';
-import { QuizItem, SubmittedItem } from '../types';
+import { QuizItem } from '../types';
 import { GlobalStyles } from '../utils/GlobalStyles';
 
 type RenderItemProps = {
@@ -27,14 +26,7 @@ const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
   const [isNextDisabled, setNextDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [quizzes, setQuizzes] = useState<QuizItem[]>([]);
-  const { subCategory, category } = useAppSelector((state) => state);
-
-  const answers =
-    useAppSelector(
-      (state) =>
-        state.answeredQuizzes.find((item: SubmittedItem) => item.subCategory === subCategory)
-          ?.questions
-    ) ?? [];
+  const { subCategory, category } = useAppSelector((state) => state.quizzes);
 
   const fetchQuiz = useCallback(async () => {
     setLoading(true);

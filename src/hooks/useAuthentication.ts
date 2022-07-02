@@ -1,19 +1,22 @@
 import { User } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 
+import { setUser } from '../features/userSlice';
 import firebaseManager from '../firebase';
+import { useAppDispatch, useAppSelector } from './redux';
 
 export function useAuthentication() {
-  const [user, setUser] = useState<User | null>();
   const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     const onAuthSuccess = (user: User) => {
-      setUser(user);
+      dispatch(setUser(user.toJSON() as User));
       setIsLoading(false);
     };
     const onAuthError = (user: null) => {
-      setUser(user);
+      dispatch(setUser(user));
       setIsLoading(false);
     };
     const unsubscribeFromAuthStatusChanged = firebaseManager.authChangeListener(
@@ -22,7 +25,7 @@ export function useAuthentication() {
     );
 
     return unsubscribeFromAuthStatusChanged;
-  }, []);
+  }, [dispatch]);
 
   return {
     user,

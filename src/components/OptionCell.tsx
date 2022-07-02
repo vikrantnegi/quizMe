@@ -14,11 +14,12 @@ type Props = {
 
 const OptionCell = (props: Props) => {
   const { option, item, handleSubmitAnswer } = props;
-  const subCategory = useAppSelector((state) => state.subCategory);
+  const subCategory = useAppSelector((state) => state.quizzes.subCategory);
 
   const answers =
     useAppSelector(
-      (state) => state.answeredQuizzes.find((item) => item.subCategory === subCategory)?.questions
+      (state) =>
+        state.quizzes.answeredQuizzes.find((item) => item.subCategory === subCategory)?.questions
     ) ?? [];
 
   const optionSelectedId = answers

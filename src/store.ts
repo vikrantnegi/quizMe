@@ -1,9 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import QuizReducer from './features/quizSlice';
+import UserReducer from './features/userSlice';
 
 const store = configureStore({
-  reducer: QuizReducer,
+  reducer: {
+    quizzes: QuizReducer,
+    user: UserReducer,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

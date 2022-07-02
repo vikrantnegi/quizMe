@@ -20,10 +20,12 @@ type Props = {
 const QuizCard = (props: Props) => {
   const { item, index, quizzes } = props;
   const dispatch = useAppDispatch();
-  const subCategory = useAppSelector((state) => state.subCategory);
+  const subCategory = useAppSelector((state) => state.quizzes.subCategory);
+  const user = useAppSelector((state) => state.user.user);
   const answers =
     useAppSelector(
-      (state) => state.answeredQuizzes.find((item) => item.subCategory === subCategory)?.questions
+      (state) =>
+        state.quizzes.answeredQuizzes.find((item) => item.subCategory === subCategory)?.questions
     ) ?? [];
 
   const isQuestionAnswered = answers.some(

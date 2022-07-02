@@ -8,18 +8,18 @@ import { Text, View } from '../components/Themed';
 import { quizCollectionTypes } from '../constants/Constants';
 import { setQuiz } from '../features/quizSlice';
 import firebaseManager from '../firebase';
-import { useAppDispatch } from '../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { SubmittedItem } from '../types';
 
 const HomeScreen = () => {
   const [quizCategories, setQuizCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.user);
 
   const getData = useCallback(async () => {
-    if (firebaseManager.user?.uid) {
-      const userData =
-        (await firebaseManager.getDoc(quizCollectionTypes.users, firebaseManager.user?.uid)) ?? {};
+    if (user?.uid) {
+      const userData = (await firebaseManager.getDoc(quizCollectionTypes.users, user?.uid)) ?? {};
 
       const remoteQuizTaken = userData?.quizzes?.map((quiz: SubmittedItem) => {
         return {
@@ -60,7 +60,7 @@ const HomeScreen = () => {
   const renderHeader = () => {
     return (
       <View style={styles.headerContainer}>
-        <Text style={styles.heading}>Hi {firebaseManager.user?.email?.split('@').shift()}</Text>
+        <Text style={styles.heading}>Hi {user?.email?.split('@').shift()}</Text>
       </View>
     );
   };
@@ -75,7 +75,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      {firebaseManager.user && renderHeader()}
+      {user && renderHeader()}
       <FlatList
         data={quizCategories}
         renderItem={renderItem}
