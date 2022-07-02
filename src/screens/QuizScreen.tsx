@@ -1,6 +1,7 @@
 import isEmpty from 'lodash.isempty';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 
 import ActivityIndicatorModal from '../components/ActivityIndicatorModal';
 import Button from '../components/Button';
@@ -11,7 +12,7 @@ import { quizCollectionTypes } from '../constants/Constants';
 import firebaseManager from '../firebase/index';
 import { useAppSelector } from '../hooks/redux';
 import { HomeStackScreenProps } from '../navigation/types';
-import { QuizItem } from '../types';
+import { QuizItem, SubmittedItem } from '../types';
 import { GlobalStyles } from '../utils/GlobalStyles';
 
 type RenderItemProps = {
@@ -30,14 +31,12 @@ const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
 
   const answers =
     useAppSelector(
-      (state) => state.answeredQuizzes.find((item) => item.subCategory === subCategory)?.questions
+      (state) =>
+        state.answeredQuizzes.find((item: SubmittedItem) => item.subCategory === subCategory)
+          ?.questions
     ) ?? [];
 
-  useEffect(() => {
-    fetchQuiz();
-  }, []);
-
-  const fetchQuiz = async () => {
+  const fetchQuiz = useCallback(async () => {
     setLoading(true);
     const data = await firebaseManager.getDoc(quizCollectionTypes.quizzes, category);
 
@@ -48,7 +47,11 @@ const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
 
     setQuizzes(quiz.questions);
     setLoading(false);
-  };
+  }, [category, subCategory]);
+
+  useEffect(() => {
+    fetchQuiz();
+  }, [fetchQuiz]);
 
   const renderItem = ({ item, index }: RenderItemProps) => {
     return <QuizCard item={item} index={index} quizzes={quizzes} />;
@@ -75,20 +78,7 @@ const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
   };
 
   const handleSubmitPress = () => {
-    if (firebaseManager.user?.uid) {
-      firebaseManager.handleAddArrayToDoc(
-        'quizzes',
-        quizCollectionTypes.users,
-        firebaseManager.user?.uid,
-        {
-          category,
-          subCategory,
-          answers,
-        }
-      );
-    } else {
-      console.log('not able to submit quiz');
-    }
+    handleNextPress();
   };
 
   const onViewableItemsChanged = useCallback(

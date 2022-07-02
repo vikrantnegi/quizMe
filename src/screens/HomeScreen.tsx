@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 
 import ActivityIndicatorModal from '../components/ActivityIndicatorModal';
@@ -16,12 +16,7 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    fetchQuizCategories();
-    getData(); // Get quiz data from firebase and set it to local
-  }, []);
-
-  const getData = async () => {
+  const getData = useCallback(async () => {
     if (firebaseManager.user?.uid) {
       const userData =
         (await firebaseManager.getDoc(quizCollectionTypes.users, firebaseManager.user?.uid)) ?? {};
@@ -38,7 +33,12 @@ const HomeScreen = () => {
     } else {
       console.log('unable  to fetch the quiz data');
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchQuizCategories();
+    getData(); // Get quiz data from firebase and set it to local
+  }, [getData]);
 
   const fetchQuizCategories = async () => {
     setLoading(true);
@@ -46,7 +46,7 @@ const HomeScreen = () => {
       quizCollectionTypes.quizzes
     );
     const quizCategories: string[] = [];
-    quizCollectionSnapshot.forEach((doc) => {
+    quizCollectionSnapshot?.forEach((doc) => {
       return quizCategories.push(doc.id);
     });
     setLoading(false);

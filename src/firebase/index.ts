@@ -15,6 +15,7 @@ import {
   collection,
   setDoc,
 } from 'firebase/firestore';
+import { showMessage } from 'react-native-flash-message';
 
 import { auth } from '../config/firebase';
 import { quizCollectionTypes } from '../constants/Constants';
@@ -39,9 +40,15 @@ class firebaseManager {
     data: object
   ) => {
     const docRef = doc(this.db, collection, document);
-    await updateDoc(docRef, {
-      [documentKey]: data,
-    });
+    try {
+      await updateDoc(docRef, {
+        [documentKey]: data,
+      });
+    } catch (error: any) {
+      showMessage({
+        message: `firebaseManager.handleAddObjToDoc: ${error.message}`,
+      });
+    }
   };
 
   handleAddArrayToDoc = async (
@@ -51,9 +58,15 @@ class firebaseManager {
     data: object
   ) => {
     const docRef = doc(this.db, collectionName, documentName);
-    await updateDoc(docRef, {
-      [documentKey]: arrayUnion(data),
-    });
+    try {
+      await updateDoc(docRef, {
+        [documentKey]: arrayUnion(data),
+      });
+    } catch (error: any) {
+      showMessage({
+        message: `firebaseManager.handleAddArrayToDoc: ${error.message}`,
+      });
+    }
   };
 
   handleUpdateDoc = async (
@@ -63,27 +76,44 @@ class firebaseManager {
     data: object
   ) => {
     const docRef = doc(this.db, collectionName, documentName);
-
-    await updateDoc(docRef, {
-      [documentKey]: data,
-    });
+    try {
+      await updateDoc(docRef, {
+        [documentKey]: data,
+      });
+    } catch (error: any) {
+      showMessage({
+        message: `firebaseManager.handleUpdateDoc: ${error.message}`,
+      });
+    }
   };
 
   getDoc = async (collectionName: string, documentName: string) => {
     const docRef = doc(this.db, collectionName, documentName);
-    const docSnap = await getDoc(docRef);
+    try {
+      const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      return docSnap.data();
-    } else {
-      // doc.data() will be undefined in this case
-      console.log('No such document!');
+      if (docSnap.exists()) {
+        return docSnap.data();
+      } else {
+        // doc.data() will be undefined in this case
+        console.log('No such document!');
+      }
+    } catch (error: any) {
+      showMessage({
+        message: `firebaseManager.getDoc: ${error.message}`,
+      });
     }
   };
 
   getAllDocFromCollection = async (collectionName: string) => {
-    const quizCollectionSnapshot = await getDocs(collection(this.db, collectionName));
-    return quizCollectionSnapshot;
+    try {
+      const quizCollectionSnapshot = await getDocs(collection(this.db, collectionName));
+      return quizCollectionSnapshot;
+    } catch (error: any) {
+      showMessage({
+        message: `firebaseManager.getAllDocFromCollection: ${error.message}`,
+      });
+    }
   };
 
   authChangeListener = (onSuccess: (user: User) => void, onError: (user: null) => void) => {
@@ -112,6 +142,9 @@ class firebaseManager {
       onSuccess?.();
     } catch (error: any) {
       onError?.(error);
+      showMessage({
+        message: `firebaseManager.createUserUsingEmail: ${error.message}`,
+      });
     }
   };
 
@@ -128,11 +161,15 @@ class firebaseManager {
           createdAt: this.user?.metadata.creationTime,
           lastLoginAt: this.user?.metadata.lastSignInTime,
         });
-      } catch (error) {
-        console.log(error.message);
+      } catch (error: any) {
+        showMessage({
+          message: `firebaseManager.createUserCollection: ${error.message}`,
+        });
       }
     } else {
-      console.log('User is not signed in');
+      showMessage({
+        message: `firebaseManager.createUserCollection: User is not signed in}`,
+      });
     }
   };
 
@@ -148,6 +185,9 @@ class firebaseManager {
       onSuccess?.();
     } catch (error: any) {
       onError?.(error);
+      showMessage({
+        message: `firebaseManager.signInUsingEmail: ${error.message}`,
+      });
     }
   };
 
