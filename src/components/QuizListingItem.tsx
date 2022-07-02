@@ -3,6 +3,8 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import Colors from '../constants/Colors';
+import { setCategories } from '../features/quizSlice';
+import { useAppDispatch } from '../hooks/redux';
 import { HomeStackScreenProps } from '../navigation/types';
 import { GlobalStyles } from '../utils/GlobalStyles';
 import { Text } from './Themed';
@@ -15,12 +17,16 @@ type Props = {
 const QuizListingItem = (props: Props) => {
   const { item, category } = props;
   const navigation = useNavigation<HomeStackScreenProps<'QuizListing'>['navigation']>();
+  const dispatch = useAppDispatch();
 
   const handleOnPress = () => {
-    navigation.navigate('Quiz', {
-      category,
-      quizSubCategory: item,
-    });
+    navigation.navigate('Quiz');
+    dispatch(
+      setCategories({
+        category,
+        subCategory: item,
+      })
+    );
   };
 
   return (

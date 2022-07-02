@@ -1,5 +1,6 @@
 export const quizCollectionTypes = {
   quizzes: 'quizzes',
+  users: 'users',
 };
 
 export const quizTypes = {

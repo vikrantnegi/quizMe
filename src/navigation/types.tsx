@@ -24,8 +24,8 @@ export type RootStackParamList = {
 
 export type HomeStackParamList = {
   Home: undefined;
-  QuizListing: { category: string };
-  Quiz: { category: string; quizSubCategory: string };
+  QuizListing: undefined;
+  Quiz: undefined;
 };
 
 export type HomeStackScreenProps<T extends keyof HomeStackParamList> = CompositeScreenProps<

@@ -15,12 +15,12 @@ type Props = {
   item: QuizItem;
   index: number;
   quizzes: QuizItem[];
-  subCategory: string;
 };
 
 const QuizCard = (props: Props) => {
-  const { item, index, quizzes, subCategory } = props;
+  const { item, index, quizzes } = props;
   const dispatch = useAppDispatch();
+  const subCategory = useAppSelector((state) => state.subCategory);
   const answers =
     useAppSelector(
       (state) => state.answeredQuizzes.find((item) => item.subCategory === subCategory)?.questions
@@ -32,7 +32,6 @@ const QuizCard = (props: Props) => {
 
   const handleSubmitAnswer = (option: Option) => {
     const answeredQuestion = {
-      subCategory,
       selectedOptionId: option.id,
       isQuestionAnswered: true,
       question: item,
@@ -85,7 +84,6 @@ const QuizCard = (props: Props) => {
             option={option}
             item={item}
             handleSubmitAnswer={handleSubmitAnswer}
-            subCategory={subCategory}
           />
         );
       })}

@@ -9,6 +9,7 @@ import WrapperComp from '../components/SafeAreaWraper';
 import { Text, View } from '../components/Themed';
 import { quizCollectionTypes } from '../constants/Constants';
 import firebaseManager from '../firebase/index';
+import { useAppSelector } from '../hooks/redux';
 import { HomeStackScreenProps } from '../navigation/types';
 import { QuizItem } from '../types';
 import { GlobalStyles } from '../utils/GlobalStyles';
@@ -25,6 +26,12 @@ const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
   const [isNextDisabled, setNextDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [quizzes, setQuizzes] = useState<QuizItem[]>([]);
+  const { subCategory, category } = useAppSelector((state) => state);
+
+  const answers =
+    useAppSelector(
+      (state) => state.answeredQuizzes.find((item) => item.subCategory === subCategory)?.questions
+    ) ?? [];
 
   useEffect(() => {
     fetchQuiz();
@@ -32,11 +39,11 @@ const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
 
   const fetchQuiz = async () => {
     setLoading(true);
-    const data = await firebaseManager.getDoc(quizCollectionTypes.quizzes, route?.params?.category);
+    const data = await firebaseManager.getDoc(quizCollectionTypes.quizzes, category);
 
     const quiz = {
-      id: route?.params?.category,
-      questions: isEmpty(data) ? [] : data && data[route?.params?.quizSubCategory],
+      id: category,
+      questions: isEmpty(data) ? [] : data?.[subCategory],
     };
 
     setQuizzes(quiz.questions);
@@ -44,14 +51,7 @@ const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
   };
 
   const renderItem = ({ item, index }: RenderItemProps) => {
-    return (
-      <QuizCard
-        item={item}
-        index={index}
-        quizzes={quizzes}
-        subCategory={route?.params?.quizSubCategory}
-      />
-    );
+    return <QuizCard item={item} index={index} quizzes={quizzes} />;
   };
 
   const handlePreviousPress = () => {
@@ -74,7 +74,22 @@ const QuizScreen = ({ route }: HomeStackScreenProps<'Quiz'>) => {
     });
   };
 
-  const handleSubmitPress = () => {};
+  const handleSubmitPress = () => {
+    if (firebaseManager.user?.uid) {
+      firebaseManager.handleAddArrayToDoc(
+        'quizzes',
+        quizCollectionTypes.users,
+        firebaseManager.user?.uid,
+        {
+          category,
+          subCategory,
+          answers,
+        }
+      );
+    } else {
+      console.log('not able to submit quiz');
+    }
+  };
 
   const onViewableItemsChanged = useCallback(
     ({ viewableItems }) => {

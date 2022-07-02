@@ -6,15 +6,39 @@ import Button from '../components/Button';
 import CategoryCard from '../components/CategoryCard';
 import { Text, View } from '../components/Themed';
 import { quizCollectionTypes } from '../constants/Constants';
+import { setQuiz } from '../features/quizSlice';
 import firebaseManager from '../firebase';
+import { useAppDispatch } from '../hooks/redux';
+import { SubmittedItem } from '../types';
 
 const HomeScreen = () => {
   const [quizCategories, setQuizCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     fetchQuizCategories();
+    getData(); // Get quiz data from firebase and set it to local
   }, []);
+
+  const getData = async () => {
+    if (firebaseManager.user?.uid) {
+      const userData =
+        (await firebaseManager.getDoc(quizCollectionTypes.users, firebaseManager.user?.uid)) ?? {};
+
+      const remoteQuizTaken = userData?.quizzes?.map((quiz: SubmittedItem) => {
+        return {
+          category: quiz.category,
+          subCategory: quiz.subCategory,
+          questions: quiz.questions,
+        };
+      });
+
+      remoteQuizTaken && dispatch(setQuiz(remoteQuizTaken));
+    } else {
+      console.log('unable  to fetch the quiz data');
+    }
+  };
 
   const fetchQuizCategories = async () => {
     setLoading(true);

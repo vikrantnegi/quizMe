@@ -13,9 +13,11 @@ import {
   getFirestore,
   updateDoc,
   collection,
+  setDoc,
 } from 'firebase/firestore';
 
 import { auth } from '../config/firebase';
+import { quizCollectionTypes } from '../constants/Constants';
 
 export type AuthEventError = {
   code: string;
@@ -30,15 +32,27 @@ class firebaseManager {
     this.db = getFirestore();
   }
 
-  handleAddDoc = async (
+  handleAddObjToDoc = async (
     documentKey: string,
     collection: string,
     document: string,
-    data: object[]
+    data: object
   ) => {
     const docRef = doc(this.db, collection, document);
     await updateDoc(docRef, {
       [documentKey]: data,
+    });
+  };
+
+  handleAddArrayToDoc = async (
+    documentKey: string,
+    collectionName: string,
+    documentName: string,
+    data: object
+  ) => {
+    const docRef = doc(this.db, collectionName, documentName);
+    await updateDoc(docRef, {
+      [documentKey]: arrayUnion(data),
     });
   };
 
@@ -49,8 +63,9 @@ class firebaseManager {
     data: object
   ) => {
     const docRef = doc(this.db, collectionName, documentName);
+
     await updateDoc(docRef, {
-      [documentKey]: arrayUnion(data),
+      [documentKey]: data,
     });
   };
 
@@ -93,9 +108,31 @@ class firebaseManager {
     try {
       const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
       this.user = userCredentials.user;
+      this.createUserCollection();
       onSuccess?.();
     } catch (error: any) {
       onError?.(error);
+    }
+  };
+
+  createUserCollection = async () => {
+    // TODO: Add feature to  avoid adding same user to database  multiple times
+    if (this.user?.uid) {
+      try {
+        await setDoc(doc(this.db, quizCollectionTypes.users, this.user?.uid), {
+          uid: this.user?.uid,
+          email: this.user?.email,
+          emailVerified: this.user?.emailVerified,
+          isAnonymous: this.user?.isAnonymous,
+          providerData: this.user?.providerData,
+          createdAt: this.user?.metadata.creationTime,
+          lastLoginAt: this.user?.metadata.lastSignInTime,
+        });
+      } catch (error) {
+        console.log(error.message);
+      }
+    } else {
+      console.log('User is not signed in');
     }
   };
 

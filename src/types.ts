@@ -22,12 +22,12 @@ export interface Answer {
 }
 
 export interface SubmittedItem {
+  category: string;
   subCategory: string;
   questions: SubmittedItemAnswer[];
 }
 
 export interface SubmittedItemAnswer {
-  subCategory: string;
   selectedOptionId: string;
   isQuestionAnswered: boolean;
   question: QuizItem;
