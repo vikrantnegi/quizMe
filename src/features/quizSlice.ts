@@ -4,11 +4,6 @@ import { quizCollectionTypes } from '../constants/Constants';
 import firebaseManager from '../firebase';
 import { SubmittedItem, SubmittedItemAnswer } from '../types';
 
-type SetCategory = {
-  category: string;
-  subCategory: string;
-};
-
 interface QuizState {
   answeredQuizzes: SubmittedItem[];
   category: string;
@@ -28,9 +23,11 @@ export const quizSlice = createSlice({
     setQuiz: (state, action: PayloadAction<SubmittedItem[]>) => {
       state.answeredQuizzes.push(...action.payload);
     },
-    setCategories: (state, action: PayloadAction<SetCategory>) => {
-      state.category = action.payload.category;
-      state.subCategory = action.payload.subCategory;
+    setCategory: (state, action: PayloadAction<string>) => {
+      state.category = action.payload;
+    },
+    setSubCategory: (state, action: PayloadAction<string>) => {
+      state.subCategory = action.payload;
     },
     submitAnswer: (state, action: PayloadAction<SubmittedItemAnswer>) => {
       const answeredQuestion = action.payload;
@@ -60,6 +57,6 @@ export const quizSlice = createSlice({
   },
 });
 
-export const { setQuiz, setCategories, submitAnswer } = quizSlice.actions;
+export const { setQuiz, setCategory, setSubCategory, submitAnswer } = quizSlice.actions;
 
 export default quizSlice.reducer;

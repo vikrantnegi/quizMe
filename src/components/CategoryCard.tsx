@@ -3,6 +3,8 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import Colors from '../constants/Colors';
+import { setCategory } from '../features/quizSlice';
+import { useAppDispatch } from '../hooks/redux';
 import { HomeStackScreenProps } from '../navigation/types';
 import { GlobalStyles } from '../utils/GlobalStyles';
 import { Text } from './Themed';
@@ -14,11 +16,11 @@ type Props = {
 const CategoryCard = (props: Props) => {
   const { category } = props;
   const navigation = useNavigation<HomeStackScreenProps<'Home'>['navigation']>();
+  const dispatch = useAppDispatch();
 
   const handleOnPress = () => {
-    navigation.navigate('QuizListing', {
-      category,
-    });
+    navigation.navigate('QuizListing');
+    dispatch(setCategory(category));
   };
 
   return (
